@@ -28,14 +28,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
-import com.xebialabs.deployit.plugin.api.boot.PluginBooter;
 import com.xebialabs.deployit.plugin.api.udm.Deployable;
 import com.xebialabs.deployit.plugin.jee.artifact.Ear;
 import com.xebialabs.deployit.server.api.importer.ImportingContext;
@@ -48,19 +44,11 @@ import com.xebialabs.overthere.local.LocalFile;
 /**
  * Unit tests for the {@link JeeArchiveImporter}
  */
-public class JeeArchiveImporterTest {
+public class JeeArchiveImporterTest extends TestBase {
     public static final String ARCHIVE_WITH_MANIFEST = "src/test/resources/ear-with-manifest.ear";
     public static final String ARCHIVE_WITHOUT_ATTRIBUTES = "src/test/resources/ear-without-manifest-attributes.ear";
     
     private static final ImportingContext DUMMY_IMPORT_CTX = new DummyImportingContext();
-    
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
-  
-    @BeforeClass
-    public static void boot() {
-        PluginBooter.bootWithoutGlobalContext();
-    }
     
     private static class StubJeeArchiveImporter extends JeeArchiveImporter {
         

@@ -28,13 +28,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.common.collect.ImmutableList;
-import com.xebialabs.deployit.plugin.api.boot.PluginBooter;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FileSource;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 
@@ -42,16 +40,11 @@ import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfo
 /**
  * Unit tests for the {@link JeeArchiveImporter}
  */
-public class EarImporterTest {
+public class EarImporterTest extends TestBase {
     
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
   
-    @BeforeClass
-    public static void boot() {
-        PluginBooter.bootWithoutGlobalContext();
-    }
-    
     @Test
     public void listsEars() {
         assertEquals(ImmutableList.of("ear-with-manifest.ear", "ear-without-manifest-attributes.ear"), 
