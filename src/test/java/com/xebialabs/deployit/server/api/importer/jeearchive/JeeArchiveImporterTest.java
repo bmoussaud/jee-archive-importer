@@ -22,7 +22,6 @@ package com.xebialabs.deployit.server.api.importer.jeearchive;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -41,7 +40,6 @@ import com.xebialabs.deployit.plugin.api.udm.Deployable;
 import com.xebialabs.deployit.plugin.jee.artifact.Ear;
 import com.xebialabs.deployit.server.api.importer.ImportingContext;
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
-import com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporter;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FileSource;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 import com.xebialabs.overthere.local.LocalFile;
@@ -51,8 +49,8 @@ import com.xebialabs.overthere.local.LocalFile;
  * Unit tests for the {@link JeeArchiveImporter}
  */
 public class JeeArchiveImporterTest {
-    public static final String EAR_WITH_MANIFEST = "src/test/resources/ear-with-manifest.ear";
-    public static final String EAR_WITHOUT_ATTRIBUTES = "src/test/resources/ear-without-manifest-attributes.ear";
+    public static final String ARCHIVE_WITH_MANIFEST = "src/test/resources/ear-with-manifest.ear";
+    public static final String ARCHIVE_WITHOUT_ATTRIBUTES = "src/test/resources/ear-without-manifest-attributes.ear";
     
     private static final ImportingContext DUMMY_IMPORT_CTX = new DummyImportingContext();
     
@@ -64,50 +62,45 @@ public class JeeArchiveImporterTest {
         PluginBooter.bootWithoutGlobalContext();
     }
     
-    @Test
-    public void listsEars() {
-        assertEquals(ImmutableList.of("ear-with-manifest.ear", "ear-without-manifest-attributes.ear"), 
-                new JeeArchiveImporter(ImmutableList.<PackageInfoScanner>of())
-                .list(new File("src/test/resources")));
-    }
-    
-    @Test
-    public void handlesEars() {
-        assertTrue("Expected EARs to be handled",
-                new JeeArchiveImporter(ImmutableList.<PackageInfoScanner>of())
-                   .canHandle(new FileSource(EAR_WITH_MANIFEST)));
-    }
-    
-    @Test
-    public void ignoresDars() throws IOException {
-        assertFalse("Expected DARs to be ignored",
-                new JeeArchiveImporter(ImmutableList.<PackageInfoScanner>of())
-                    .canHandle(new FileSource(tempFolder.newFile("myApp.dar"))));
+    private static class StubJeeArchiveImporter extends JeeArchiveImporter {
+        
+        private StubJeeArchiveImporter() {
+            super(ImmutableList.<PackageInfoScanner>of());
+        }
+
+        // parameter value doesn't matter, just triggers a different constructor
+        private StubJeeArchiveImporter(boolean loadConfig) {
+            super();
+        }
+
+        @Override
+        protected boolean isSupportedJeeArchive(String filename) {
+            throw new UnsupportedOperationException("TODO Auto-generated method stub");
+        }
     }
     
     @Test
     public void triesScannersInOrder() {
         // manifest scanner comes first
-        PackageInfo result = new JeeArchiveImporter().preparePackage(
-                new FileSource(EAR_WITH_MANIFEST), DUMMY_IMPORT_CTX);
+        PackageInfo result = new StubJeeArchiveImporter(true).preparePackage(
+                new FileSource(ARCHIVE_WITH_MANIFEST), DUMMY_IMPORT_CTX);
         assertEquals("myApp", result.getApplicationName());
         assertEquals("3", result.getApplicationVersion());
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void failsIfNoScannerSucceeds() {
-        new JeeArchiveImporter(ImmutableList.<PackageInfoScanner>of())
-        .preparePackage(new FileSource(EAR_WITH_MANIFEST), DUMMY_IMPORT_CTX);
+        new StubJeeArchiveImporter().preparePackage(
+                new FileSource(ARCHIVE_WITH_MANIFEST), DUMMY_IMPORT_CTX);
     }
     
     @Test
     public void addsEarToPackage() throws IOException {
-        File earFile = new File(EAR_WITH_MANIFEST);
+        File earFile = new File(ARCHIVE_WITH_MANIFEST);
         PackageInfo packageInfo = new PackageInfo(new FileSource(earFile));
         packageInfo.setApplicationName("myApp");
         packageInfo.setApplicationVersion("2.0");
-        List<Deployable> deployables = 
-            new JeeArchiveImporter(ImmutableList.<PackageInfoScanner>of())
+        List<Deployable> deployables = new StubJeeArchiveImporter()
             .importEntities(packageInfo, DUMMY_IMPORT_CTX).getDeployables();
         assertEquals(1, deployables.size());
         assertTrue(format("Expected instance of %s", Ear.class),

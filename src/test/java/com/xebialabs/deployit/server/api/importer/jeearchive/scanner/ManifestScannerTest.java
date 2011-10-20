@@ -20,8 +20,8 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
-import static com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporterTest.EAR_WITHOUT_ATTRIBUTES;
-import static com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporterTest.EAR_WITH_MANIFEST;
+import static com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporterTest.ARCHIVE_WITHOUT_ATTRIBUTES;
+import static com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporterTest.ARCHIVE_WITH_MANIFEST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -42,12 +42,12 @@ public class ManifestScannerTest {
 
     @Test
     public void returnsNullIfAttributesMissing() throws IOException {
-        assertNull(scanner.scan(new FileSource(EAR_WITHOUT_ATTRIBUTES)));
+        assertNull(scanner.scan(new FileSource(ARCHIVE_WITHOUT_ATTRIBUTES)));
     }
     
     @Test
     public void scansManifest() throws IOException {
-        PackageInfo result = scanner.scan(new FileSource(EAR_WITH_MANIFEST));
+        PackageInfo result = scanner.scan(new FileSource(ARCHIVE_WITH_MANIFEST));
         assertEquals("myApp", result.getApplicationName());
         assertEquals("3", result.getApplicationVersion());
     }

@@ -23,7 +23,6 @@ package com.xebialabs.deployit.server.api.importer.jeearchive;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.xebialabs.deployit.plugin.api.reflect.DescriptorRegistry.getDescriptor;
-import static com.xebialabs.deployit.server.api.importer.jeearchive.io.JeeArchives.isEar;
 import static java.lang.String.format;
 
 import java.io.File;
@@ -47,7 +46,7 @@ import com.xebialabs.deployit.server.api.importer.jeearchive.config.ConfigParser
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 import com.xebialabs.overthere.local.LocalFile;
 
-public class JeeArchiveImporter implements ListableImporter {
+abstract class JeeArchiveImporter implements ListableImporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JeeArchiveImporter.class);
     
     private static final String CONFIG_FILE_NAME = "jee-archive-importer.properties";
@@ -63,7 +62,7 @@ public class JeeArchiveImporter implements ListableImporter {
         }
     }
     
-    private final List<PackageInfoScanner> scanners;
+    protected final List<PackageInfoScanner> scanners;
     
     public JeeArchiveImporter() {
         this(new ConfigParser(CONFIG).get());
@@ -76,19 +75,21 @@ public class JeeArchiveImporter implements ListableImporter {
     
     @Override
     public List<String> list(File directory) {
-        ImmutableList<String> earFiles = copyOf(directory.list(new FilenameFilter() {
+        ImmutableList<String> supportedFiles = copyOf(directory.list(new FilenameFilter() {
                     @Override
                     public boolean accept(File dir, String name) {
-                        return isEar(name);
+                        return isSupportedJeeArchive(name);
                     }
                 }));
-        LOGGER.debug("Found EAR files in package directory: {}", earFiles);
-        return earFiles;
+        LOGGER.debug("Found supported JEE archives in package directory: {}", supportedFiles);
+        return supportedFiles;
     }
+    
+    protected abstract boolean isSupportedJeeArchive(String filename);
 
     @Override
     public boolean canHandle(ImportSource source) {
-        return isEar(source.getFile());
+        return isSupportedJeeArchive(source.getFile().getName());
     }
 
     @Override
@@ -102,7 +103,7 @@ public class JeeArchiveImporter implements ListableImporter {
                 return result;
             }
         }
-        throw new IllegalArgumentException(format("Unable to import EAR source '%s'", source));
+        throw new IllegalArgumentException(format("Unable to import JEE archive source '%s'", source));
     }
 
     @Override
