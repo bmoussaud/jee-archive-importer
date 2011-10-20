@@ -39,7 +39,7 @@ public class EarImporter extends JeeArchiveImporter {
     }
     
     @Override
-    protected boolean isSupportedJeeArchive(String filename) {
+    protected boolean isSupportedFile(String filename) {
         return isEar(filename);
     }
 

@@ -62,7 +62,7 @@ public class JeeArchiveImporterTest extends TestBase {
         }
 
         @Override
-        protected boolean isSupportedJeeArchive(String filename) {
+        protected boolean isSupportedFile(String filename) {
             throw new UnsupportedOperationException("TODO Auto-generated method stub");
         }
     }
