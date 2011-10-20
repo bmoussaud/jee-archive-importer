@@ -23,7 +23,7 @@ package com.xebialabs.deployit.server.api.importer.jeearchive;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.xebialabs.deployit.plugin.api.reflect.DescriptorRegistry.getDescriptor;
-import static com.xebialabs.deployit.server.api.importer.jeearchive.io.Ears.isEar;
+import static com.xebialabs.deployit.server.api.importer.jeearchive.io.JeeArchives.isEar;
 import static java.lang.String.format;
 
 import java.io.File;
@@ -47,10 +47,10 @@ import com.xebialabs.deployit.server.api.importer.jeearchive.config.ConfigParser
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 import com.xebialabs.overthere.local.LocalFile;
 
-public class EarImporter implements ListableImporter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EarImporter.class);
+public class JeeArchiveImporter implements ListableImporter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JeeArchiveImporter.class);
     
-    private static final String CONFIG_FILE_NAME = "ear-importer.properties";
+    private static final String CONFIG_FILE_NAME = "jee-archive-importer.properties";
     private static final Properties CONFIG = new Properties();
     
     static {
@@ -65,12 +65,12 @@ public class EarImporter implements ListableImporter {
     
     private final List<PackageInfoScanner> scanners;
     
-    public EarImporter() {
+    public JeeArchiveImporter() {
         this(new ConfigParser(CONFIG).get());
     }
 
     @VisibleForTesting
-    protected EarImporter(List<PackageInfoScanner> scanners) {
+    protected JeeArchiveImporter(List<PackageInfoScanner> scanners) {
         this.scanners = copyOf(scanners);
     }
     

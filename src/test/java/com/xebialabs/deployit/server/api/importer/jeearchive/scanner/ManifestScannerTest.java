@@ -20,8 +20,8 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
-import static com.xebialabs.deployit.server.api.importer.jeearchive.EarImporterTest.EAR_WITHOUT_ATTRIBUTES;
-import static com.xebialabs.deployit.server.api.importer.jeearchive.EarImporterTest.EAR_WITH_MANIFEST;
+import static com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporterTest.EAR_WITHOUT_ATTRIBUTES;
+import static com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporterTest.EAR_WITH_MANIFEST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 

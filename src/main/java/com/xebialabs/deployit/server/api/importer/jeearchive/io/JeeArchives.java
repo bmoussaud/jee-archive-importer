@@ -34,7 +34,7 @@ import com.xebialabs.deployit.plugin.jee.artifact.Ear;
 import de.schlichtherle.truezip.file.TFile;
 import de.schlichtherle.truezip.file.TFileInputStream;
 
-public class Ears {
+public class JeeArchives {
     public static final String MANIFEST_PATH = "META-INF/MANIFEST.MF";
     
     // must be lowercase

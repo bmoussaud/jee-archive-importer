@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xebialabs.deployit.server.api.importer.ImportSource;
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
-import com.xebialabs.deployit.server.api.importer.jeearchive.io.Ears;
+import com.xebialabs.deployit.server.api.importer.jeearchive.io.JeeArchives;
 
 public class ManifestScanner implements PackageInfoScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManifestScanner.class);
@@ -46,7 +46,7 @@ public class ManifestScanner implements PackageInfoScanner {
     public PackageInfo scan(ImportSource ear) {
         Attributes mainAttributes;
         try {
-            mainAttributes = Ears.getManifest(ear.getFile()).getMainAttributes();
+            mainAttributes = JeeArchives.getManifest(ear.getFile()).getMainAttributes();
         } catch (IOException exception) {
             LOGGER.warn("Unable to read manifest for EAR '{}' due to: {}", 
                     ear.getFile().getName(), exception);

@@ -41,16 +41,16 @@ import com.xebialabs.deployit.plugin.api.udm.Deployable;
 import com.xebialabs.deployit.plugin.jee.artifact.Ear;
 import com.xebialabs.deployit.server.api.importer.ImportingContext;
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
-import com.xebialabs.deployit.server.api.importer.jeearchive.EarImporter;
+import com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporter;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FileSource;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 import com.xebialabs.overthere.local.LocalFile;
 
 
 /**
- * Unit tests for the {@link EarImporter}
+ * Unit tests for the {@link JeeArchiveImporter}
  */
-public class EarImporterTest {
+public class JeeArchiveImporterTest {
     public static final String EAR_WITH_MANIFEST = "src/test/resources/ear-with-manifest.ear";
     public static final String EAR_WITHOUT_ATTRIBUTES = "src/test/resources/ear-without-manifest-attributes.ear";
     
@@ -67,28 +67,28 @@ public class EarImporterTest {
     @Test
     public void listsEars() {
         assertEquals(ImmutableList.of("ear-with-manifest.ear", "ear-without-manifest-attributes.ear"), 
-                new EarImporter(ImmutableList.<PackageInfoScanner>of())
+                new JeeArchiveImporter(ImmutableList.<PackageInfoScanner>of())
                 .list(new File("src/test/resources")));
     }
     
     @Test
     public void handlesEars() {
         assertTrue("Expected EARs to be handled",
-                new EarImporter(ImmutableList.<PackageInfoScanner>of())
+                new JeeArchiveImporter(ImmutableList.<PackageInfoScanner>of())
                    .canHandle(new FileSource(EAR_WITH_MANIFEST)));
     }
     
     @Test
     public void ignoresDars() throws IOException {
         assertFalse("Expected DARs to be ignored",
-                new EarImporter(ImmutableList.<PackageInfoScanner>of())
+                new JeeArchiveImporter(ImmutableList.<PackageInfoScanner>of())
                     .canHandle(new FileSource(tempFolder.newFile("myApp.dar"))));
     }
     
     @Test
     public void triesScannersInOrder() {
         // manifest scanner comes first
-        PackageInfo result = new EarImporter().preparePackage(
+        PackageInfo result = new JeeArchiveImporter().preparePackage(
                 new FileSource(EAR_WITH_MANIFEST), DUMMY_IMPORT_CTX);
         assertEquals("myApp", result.getApplicationName());
         assertEquals("3", result.getApplicationVersion());
@@ -96,7 +96,7 @@ public class EarImporterTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void failsIfNoScannerSucceeds() {
-        new EarImporter(ImmutableList.<PackageInfoScanner>of())
+        new JeeArchiveImporter(ImmutableList.<PackageInfoScanner>of())
         .preparePackage(new FileSource(EAR_WITH_MANIFEST), DUMMY_IMPORT_CTX);
     }
     
@@ -107,7 +107,7 @@ public class EarImporterTest {
         packageInfo.setApplicationName("myApp");
         packageInfo.setApplicationVersion("2.0");
         List<Deployable> deployables = 
-            new EarImporter(ImmutableList.<PackageInfoScanner>of())
+            new JeeArchiveImporter(ImmutableList.<PackageInfoScanner>of())
             .importEntities(packageInfo, DUMMY_IMPORT_CTX).getDeployables();
         assertEquals(1, deployables.size());
         assertTrue(format("Expected instance of %s", Ear.class),
