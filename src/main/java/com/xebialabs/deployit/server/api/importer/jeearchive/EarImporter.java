@@ -18,12 +18,12 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear;
+package com.xebialabs.deployit.server.api.importer.jeearchive;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
 import static com.xebialabs.deployit.plugin.api.reflect.DescriptorRegistry.getDescriptor;
-import static com.xebialabs.deployit.server.api.importer.ear.io.Ears.isEar;
+import static com.xebialabs.deployit.server.api.importer.jeearchive.io.Ears.isEar;
 import static java.lang.String.format;
 
 import java.io.File;
@@ -43,8 +43,8 @@ import com.xebialabs.deployit.server.api.importer.ImportedPackage;
 import com.xebialabs.deployit.server.api.importer.ImportingContext;
 import com.xebialabs.deployit.server.api.importer.ListableImporter;
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
-import com.xebialabs.deployit.server.api.importer.ear.config.ConfigParser;
-import com.xebialabs.deployit.server.api.importer.ear.scanner.PackageInfoScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.config.ConfigParser;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 import com.xebialabs.overthere.local.LocalFile;
 
 public class EarImporter implements ListableImporter {

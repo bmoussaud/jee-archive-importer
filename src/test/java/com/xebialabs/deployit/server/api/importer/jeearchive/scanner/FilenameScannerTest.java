@@ -18,7 +18,7 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear.scanner;
+package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FilenameScanner;
 
 /**
  * Unit test(s) for the {@link FilenameScanner}

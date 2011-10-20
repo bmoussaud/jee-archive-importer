@@ -18,7 +18,7 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear.io;
+package com.xebialabs.deployit.server.api.importer.jeearchive.io;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;

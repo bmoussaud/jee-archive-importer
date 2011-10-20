@@ -18,7 +18,7 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear.scanner;
+package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
 import java.io.IOException;
 import java.util.jar.Attributes;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xebialabs.deployit.server.api.importer.ImportSource;
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
-import com.xebialabs.deployit.server.api.importer.ear.io.Ears;
+import com.xebialabs.deployit.server.api.importer.jeearchive.io.Ears;
 
 public class ManifestScanner implements PackageInfoScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManifestScanner.class);

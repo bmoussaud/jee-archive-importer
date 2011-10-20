@@ -18,11 +18,11 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear.config;
+package com.xebialabs.deployit.server.api.importer.jeearchive.config;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Lists.newLinkedList;
-import static com.xebialabs.deployit.server.api.importer.ear.collect.Maps2.transformKeys;
+import static com.xebialabs.deployit.server.api.importer.jeearchive.collect.Maps2.transformKeys;
 import static java.lang.Boolean.parseBoolean;
 
 import java.util.List;
@@ -39,9 +39,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import com.xebialabs.deployit.server.api.importer.ear.scanner.FilenameScanner;
-import com.xebialabs.deployit.server.api.importer.ear.scanner.ManifestScanner;
-import com.xebialabs.deployit.server.api.importer.ear.scanner.PackageInfoScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FilenameScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.ManifestScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 
 
 public class ConfigParser implements Supplier<List<PackageInfoScanner>>{

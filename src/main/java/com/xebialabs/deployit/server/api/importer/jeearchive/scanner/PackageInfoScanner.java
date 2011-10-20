@@ -1,5 +1,5 @@
 /*
- * @(#)FileSource.java     19 Oct 2011
+ * @(#)PackageInfoScanner.java     19 Oct 2011
  *
  * Copyright © 2010 Andrew Phillips.
  *
@@ -18,30 +18,11 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear.scanner;
-
-import java.io.File;
+package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
 import com.xebialabs.deployit.server.api.importer.ImportSource;
+import com.xebialabs.deployit.server.api.importer.PackageInfo;
 
-public class FileSource implements ImportSource {
-    private final File file;
-    
-    public FileSource(String path) {
-        this(new File(path));
-    }
-    
-    public FileSource(File file) {
-        this.file = file;
-    }
-    
-    @Override
-    public File getFile() {
-        return file;
-    }
-
-    @Override
-    public void cleanUp() {
-        // do nothing
-    }
+public interface PackageInfoScanner {
+    PackageInfo scan(ImportSource ear); 
 }

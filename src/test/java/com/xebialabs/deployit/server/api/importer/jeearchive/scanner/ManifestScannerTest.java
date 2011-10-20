@@ -18,10 +18,10 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear.scanner;
+package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
-import static com.xebialabs.deployit.server.api.importer.ear.EarImporterTest.EAR_WITHOUT_ATTRIBUTES;
-import static com.xebialabs.deployit.server.api.importer.ear.EarImporterTest.EAR_WITH_MANIFEST;
+import static com.xebialabs.deployit.server.api.importer.jeearchive.EarImporterTest.EAR_WITHOUT_ATTRIBUTES;
+import static com.xebialabs.deployit.server.api.importer.jeearchive.EarImporterTest.EAR_WITH_MANIFEST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -30,6 +30,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.ManifestScanner;
 
 /**
  * Unit test(s) for the {@link ManifestScanner}

@@ -18,7 +18,7 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear.scanner;
+package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

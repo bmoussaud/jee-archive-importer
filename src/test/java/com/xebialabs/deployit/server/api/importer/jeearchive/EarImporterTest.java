@@ -18,7 +18,7 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear;
+package com.xebialabs.deployit.server.api.importer.jeearchive;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -41,8 +41,9 @@ import com.xebialabs.deployit.plugin.api.udm.Deployable;
 import com.xebialabs.deployit.plugin.jee.artifact.Ear;
 import com.xebialabs.deployit.server.api.importer.ImportingContext;
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
-import com.xebialabs.deployit.server.api.importer.ear.scanner.FileSource;
-import com.xebialabs.deployit.server.api.importer.ear.scanner.PackageInfoScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.EarImporter;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FileSource;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 import com.xebialabs.overthere.local.LocalFile;
 
 

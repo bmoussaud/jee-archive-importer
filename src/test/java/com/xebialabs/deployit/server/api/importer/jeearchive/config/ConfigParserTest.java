@@ -18,7 +18,7 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear.config;
+package com.xebialabs.deployit.server.api.importer.jeearchive.config;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -29,9 +29,10 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import com.xebialabs.deployit.server.api.importer.ear.scanner.FilenameScanner;
-import com.xebialabs.deployit.server.api.importer.ear.scanner.ManifestScanner;
-import com.xebialabs.deployit.server.api.importer.ear.scanner.PackageInfoScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.config.ConfigParser;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FilenameScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.ManifestScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 
 /**
  * Unit tests for the {@link ConfigParser}

@@ -18,7 +18,7 @@
  * limitations under the License.
  * ====================================================================
  */
-package com.xebialabs.deployit.server.api.importer.ear.collect;
+package com.xebialabs.deployit.server.api.importer.jeearchive.collect;
 
 import static com.google.common.base.Functions.forMap;
 import static com.google.common.base.Preconditions.checkNotNull;
