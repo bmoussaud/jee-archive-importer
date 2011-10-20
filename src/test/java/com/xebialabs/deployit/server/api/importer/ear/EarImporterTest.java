@@ -72,13 +72,15 @@ public class EarImporterTest {
     
     @Test
     public void handlesEars() {
-        assertTrue(new EarImporter(ImmutableList.<PackageInfoScanner>of())
+        assertTrue("Expected EARs to be handled",
+                new EarImporter(ImmutableList.<PackageInfoScanner>of())
                    .canHandle(new FileSource(EAR_WITH_MANIFEST)));
     }
     
     @Test
     public void ignoresDars() throws IOException {
-        assertFalse(new EarImporter(ImmutableList.<PackageInfoScanner>of())
+        assertFalse("Expected DARs to be ignored",
+                new EarImporter(ImmutableList.<PackageInfoScanner>of())
                     .canHandle(new FileSource(tempFolder.newFile("myApp.dar"))));
     }
     
