@@ -1,0 +1,54 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.xebialabs.deployit.hotfix'
+version = '1.0'
+
+sourceCompatibility = 1.6
+sourceEncoding = 'UTF-8'
+
+configurations {
+  // http://issues.gradle.org/browse/GRADLE-784
+  provided
+}
+
+dependencies {
+  provided 'com.xebialabs.deployit:server-core:3.5.2'
+}
+
+repositories {
+	mavenLocal()
+}
+
+sourceSets {
+  main { compileClasspath += configurations.provided }
+}
+
+task generatePom << {
+  conf2ScopeMappings.addMapping(Integer.MAX_VALUE, configurations.provided, 
+    Conf2ScopeMappingContainer.PROVIDED)
+  pom {
+    project { 
+      build { 
+        plugins {
+          plugin {
+            artifactId 'maven-compiler-plugin'
+            version '2.3'
+            configuration {
+              encoding = sourceEncoding 
+              source = "${sourceCompatibility}".toString()
+              target = "${sourceCompatibility}".toString()
+            }
+          }
+          plugin {
+            artifactId 'maven-resources-plugin'
+            version '2.3'
+            configuration {
+              encoding = sourceEncoding
+            }
+          }
+        }
+      }
+    }
+  }.writeTo('pom.xml')
+}
