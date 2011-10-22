@@ -22,9 +22,9 @@ package com.xebialabs.deployit.server.api.importer.jeearchive;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.copyOf;
-import static com.xebialabs.deployit.plugin.api.reflect.DescriptorRegistry.getDescriptor;
 import static java.lang.String.format;
 
+import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
@@ -33,16 +33,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.xebialabs.deployit.plugin.api.reflect.Type;
-import com.xebialabs.deployit.plugin.jee.artifact.Ear;
-import com.xebialabs.deployit.server.api.importer.ImportSource;
-import com.xebialabs.deployit.server.api.importer.ImportedPackage;
-import com.xebialabs.deployit.server.api.importer.ImportingContext;
-import com.xebialabs.deployit.server.api.importer.PackageInfo;
 import com.xebialabs.deployit.server.api.importer.jeearchive.config.ConfigParser;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
-import com.xebialabs.overthere.local.LocalFile;
+import com.xebialabs.deployit.server.api.importer.singlefile.ExtensionBasedImporter;
 
-abstract class JeeArchiveImporter extends FilenameBasedImporter {
+abstract class JeeArchiveImporter extends ExtensionBasedImporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JeeArchiveImporter.class);
     
     private static final String CONFIG_FILE_NAME = "jee-archive-importer.properties";
@@ -60,43 +55,29 @@ abstract class JeeArchiveImporter extends FilenameBasedImporter {
     
     protected final List<PackageInfoScanner> scanners;
     
-    public JeeArchiveImporter() {
-        this(new ConfigParser(CONFIG).get());
+    protected JeeArchiveImporter(String extension, Type type) {
+        this(extension, type, new ConfigParser(CONFIG).get());
     }
-
+    
     @VisibleForTesting
-    protected JeeArchiveImporter(List<PackageInfoScanner> scanners) {
+    protected JeeArchiveImporter(String extension, Type type, 
+            List<PackageInfoScanner> scanners) {
+        super(extension, type);
+        // defensive copy
         this.scanners = copyOf(scanners);
     }
     
     @Override
-    public PackageInfo preparePackage(ImportSource source, ImportingContext context) {
+    protected PackageMetadata getPackageMetadata(File file) {
         // first non-null result wins
         for (PackageInfoScanner scanner : scanners) {
-            PackageInfo result = scanner.scan(source);
+            PackageMetadata result = scanner.scan(file);
             if (result != null) {
-                LOGGER.info("Returning package for application '{}', version {}", 
-                        result.getApplicationName(), result.getApplicationVersion());
+                LOGGER.info("Returning package metadata for application '{}', version {}", 
+                        result.appName, result.appVersion);
                 return result;
             }
         }
-        throw new IllegalArgumentException(format("Unable to import JEE archive source '%s'", source));
-    }
-
-    @Override
-    public ImportedPackage importEntities(PackageInfo packageInfo, ImportingContext context) {
-        ImportedPackage importedPackage = new ImportedPackage(packageInfo);
-        Ear ear = getDescriptor(Type.valueOf(Ear.class)).newInstance();
-        ear.setId(format("%s/%s", importedPackage.getDeploymentPackage().getId(),
-                importedPackage.getApplication().getName()));
-        ear.setFile(LocalFile.valueOf(packageInfo.getSource().getFile()));
-        LOGGER.debug("Created EAR with ID '{}'", ear.getId());
-        importedPackage.addDeployable(ear);
-        return importedPackage;
-    }
-
-    @Override
-    public void cleanUp(PackageInfo packageInfo, ImportingContext context) {
-        LOGGER.debug("Nothing to clean up");
+        throw new IllegalArgumentException(format("Unable to import JEE archive (?) '%s'", file));
     }
 }

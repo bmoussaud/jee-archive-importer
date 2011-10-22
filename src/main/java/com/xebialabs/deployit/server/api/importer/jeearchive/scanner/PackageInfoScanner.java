@@ -20,9 +20,10 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
-import com.xebialabs.deployit.server.api.importer.ImportSource;
-import com.xebialabs.deployit.server.api.importer.PackageInfo;
+import java.io.File;
+
+import com.xebialabs.deployit.server.api.importer.singlefile.SingleFileImporter.PackageMetadata;
 
 public interface PackageInfoScanner {
-    PackageInfo scan(ImportSource ear); 
+    PackageMetadata scan(File jeeArchive); 
 }

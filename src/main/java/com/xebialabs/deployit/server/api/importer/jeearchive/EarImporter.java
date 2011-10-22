@@ -20,27 +20,22 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive;
 
-import static com.xebialabs.deployit.server.api.importer.jeearchive.io.JeeArchives.isEar;
-
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.xebialabs.deployit.plugin.api.reflect.Type;
+import com.xebialabs.deployit.plugin.jee.artifact.Ear;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 
 public class EarImporter extends JeeArchiveImporter {
+    private static final Type EAR_TYPE = Type.valueOf(Ear.class);
 
     public EarImporter() {
-        super();
+        super(Ear.ARCHIVE_EXTENSION, EAR_TYPE);
     }
     
     @VisibleForTesting
     protected EarImporter(List<PackageInfoScanner> scanners) {
-        super(scanners);
+        super(Ear.ARCHIVE_EXTENSION, EAR_TYPE, scanners);
     }
-    
-    @Override
-    protected boolean isSupportedFile(String filename) {
-        return isEar(filename);
-    }
-
 }

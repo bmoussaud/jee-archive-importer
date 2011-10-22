@@ -29,8 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.xebialabs.deployit.server.api.importer.PackageInfo;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FilenameScanner;
+import com.xebialabs.deployit.server.api.importer.singlefile.SingleFileImporter.PackageMetadata;
 
 /**
  * Unit test(s) for the {@link FilenameScanner}
@@ -45,22 +44,20 @@ public class FilenameScannerTest {
     
     @Test
     public void returnsNullIfNoMatch() throws IOException {
-        assertNull(scanner.scan(new FileSource(tempFolder.newFile("no match.ear"))));
+        assertNull(scanner.scan(tempFolder.newFile("no match.ear")));
     }
     
     @Test
     public void usesNameAndVersionIfPresent() throws IOException {
-        PackageInfo result = scanner.scan(
-                new FileSource(tempFolder.newFile("myApp-2.ear")));
-        assertEquals("myApp", result.getApplicationName());
-        assertEquals("2", result.getApplicationVersion());
+        PackageMetadata result = scanner.scan(tempFolder.newFile("myApp-2.ear"));
+        assertEquals("myApp", result.appName);
+        assertEquals("2", result.appVersion);
     }
     
     @Test
     public void fallsBackToDefaultVersion() throws IOException {
-        PackageInfo result = scanner.scan(
-                new FileSource(tempFolder.newFile("myApp.ear")));
-        assertEquals("myApp", result.getApplicationName());
-        assertEquals("1.0", result.getApplicationVersion());
+        PackageMetadata result = scanner.scan(tempFolder.newFile("myApp.ear"));
+        assertEquals("myApp", result.appName);
+        assertEquals("1.0", result.appVersion);
     }
 }

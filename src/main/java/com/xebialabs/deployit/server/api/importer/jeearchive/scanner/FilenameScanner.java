@@ -20,6 +20,7 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,8 +30,7 @@ import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xebialabs.deployit.server.api.importer.ImportSource;
-import com.xebialabs.deployit.server.api.importer.PackageInfo;
+import com.xebialabs.deployit.server.api.importer.singlefile.SingleFileImporter.PackageMetadata;
 
 public class FilenameScanner implements PackageInfoScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(FilenameScanner.class);
@@ -44,21 +44,19 @@ public class FilenameScanner implements PackageInfoScanner {
     }
     
     @Override
-    public @Nullable PackageInfo scan(@Nonnull ImportSource ear) {
-        String earName = ear.getFile().getName();
-        Matcher nameVersionMatcher = nameVersionPattern.matcher(earName);
+    public @Nullable PackageMetadata scan(@Nonnull File jeeArchive) {
+        String jeeArchiveName = jeeArchive.getName();
+        Matcher nameVersionMatcher = nameVersionPattern.matcher(jeeArchiveName);
         boolean matches = nameVersionMatcher.matches();
         LOGGER.trace("Attempted to match name '{}' against regex '{}': {}",
-                new Object[] { earName, nameVersionPattern, (matches ? "succeeded" : "failed") });
+                new Object[] { jeeArchiveName, nameVersionPattern, (matches ? "succeeded" : "failed") });
         if (!matches) {
             return null;
         }
         
-        PackageInfo packageInfo = new PackageInfo(ear);
-        packageInfo.setApplicationName(nameVersionMatcher.group(1));
-        packageInfo.setApplicationVersion(
+        return new PackageMetadata(nameVersionMatcher.group(1),
                 ((nameVersionMatcher.groupCount() > 1) && (nameVersionMatcher.group(2) != null))
-                 ? nameVersionMatcher.group(2) : defaultVersion);
-        return packageInfo;
+                 ? nameVersionMatcher.group(2) 
+                 : defaultVersion);
     }
 }

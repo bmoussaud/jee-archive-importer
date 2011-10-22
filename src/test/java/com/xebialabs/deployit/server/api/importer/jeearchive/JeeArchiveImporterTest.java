@@ -32,6 +32,7 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
+import com.xebialabs.deployit.plugin.api.reflect.Type;
 import com.xebialabs.deployit.plugin.api.udm.Deployable;
 import com.xebialabs.deployit.plugin.jee.artifact.Ear;
 import com.xebialabs.deployit.server.api.importer.ImportingContext;
@@ -53,16 +54,16 @@ public class JeeArchiveImporterTest extends TestBase {
     private static class StubJeeArchiveImporter extends JeeArchiveImporter {
         
         private StubJeeArchiveImporter() {
-            super(ImmutableList.<PackageInfoScanner>of());
+            super("ear", Type.valueOf(Ear.class), ImmutableList.<PackageInfoScanner>of());
         }
 
         // parameter value doesn't matter, just triggers a different constructor
         private StubJeeArchiveImporter(boolean loadConfig) {
-            super();
+            super("ear", Type.valueOf(Ear.class));
         }
 
         @Override
-        protected boolean isSupportedFile(String filename) {
+        protected boolean isSupportedFile(File file) {
             throw new UnsupportedOperationException("TODO Auto-generated method stub");
         }
     }

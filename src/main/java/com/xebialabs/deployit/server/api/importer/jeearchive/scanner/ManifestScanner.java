@@ -20,6 +20,7 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
@@ -27,9 +28,8 @@ import java.util.jar.Attributes.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xebialabs.deployit.server.api.importer.ImportSource;
-import com.xebialabs.deployit.server.api.importer.PackageInfo;
 import com.xebialabs.deployit.server.api.importer.jeearchive.io.JeeArchives;
+import com.xebialabs.deployit.server.api.importer.singlefile.SingleFileImporter.PackageMetadata;
 
 public class ManifestScanner implements PackageInfoScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManifestScanner.class);
@@ -43,26 +43,24 @@ public class ManifestScanner implements PackageInfoScanner {
     }
 
     @Override
-    public PackageInfo scan(ImportSource ear) {
+    public PackageMetadata scan(File jeeArchive) {
         Attributes mainAttributes;
         try {
-            mainAttributes = JeeArchives.getManifest(ear.getFile()).getMainAttributes();
+            mainAttributes = JeeArchives.getManifest(jeeArchive).getMainAttributes();
         } catch (IOException exception) {
-            LOGGER.warn("Unable to read manifest for EAR '{}' due to: {}", 
-                    ear.getFile().getName(), exception);
+            LOGGER.warn("Unable to read manifest for JEE archive '{}' due to: {}", 
+                    jeeArchive.getName(), exception);
             return null;
         }
         
         if (!(mainAttributes.containsKey(nameAttribute) 
                 && mainAttributes.containsKey(versionAttribute))) {
-            LOGGER.warn("Manifest for EAR '{}' does not contain expected attributes '{}' and '{}'", 
-                    new Object[] { ear.getFile().getName(), nameAttribute, versionAttribute });
+            LOGGER.warn("Manifest for JEE archive '{}' does not contain expected attributes '{}' and '{}'", 
+                    new Object[] { jeeArchive.getName(), nameAttribute, versionAttribute });
             return null;
         }
         
-        PackageInfo packageInfo = new PackageInfo(ear);
-        packageInfo.setApplicationName(mainAttributes.getValue(nameAttribute));
-        packageInfo.setApplicationVersion(mainAttributes.getValue(versionAttribute));
-        return packageInfo;
+        return new PackageMetadata(mainAttributes.getValue(nameAttribute),
+                mainAttributes.getValue(versionAttribute));
     }
 }
