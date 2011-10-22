@@ -38,7 +38,7 @@ import com.xebialabs.deployit.plugin.jee.artifact.Ear;
 import com.xebialabs.deployit.server.api.importer.ImportingContext;
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FileSource;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageMetadataScanner;
 import com.xebialabs.overthere.local.LocalFile;
 
 
@@ -54,7 +54,7 @@ public class JeeArchiveImporterTest extends TestBase {
     private static class StubJeeArchiveImporter extends JeeArchiveImporter {
         
         private StubJeeArchiveImporter() {
-            super("ear", Type.valueOf(Ear.class), ImmutableList.<PackageInfoScanner>of());
+            super("ear", Type.valueOf(Ear.class), ImmutableList.<PackageMetadataScanner>of());
         }
 
         // parameter value doesn't matter, just triggers a different constructor

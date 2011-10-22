@@ -24,6 +24,6 @@ import java.io.File;
 
 import com.xebialabs.deployit.server.api.importer.singlefile.SingleFileImporter.PackageMetadata;
 
-public interface PackageInfoScanner {
+public interface PackageMetadataScanner {
     PackageMetadata scan(File jeeArchive); 
 }

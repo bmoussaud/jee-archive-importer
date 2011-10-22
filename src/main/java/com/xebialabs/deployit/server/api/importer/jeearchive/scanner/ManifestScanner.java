@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.xebialabs.deployit.server.api.importer.jeearchive.io.JeeArchives;
 import com.xebialabs.deployit.server.api.importer.singlefile.SingleFileImporter.PackageMetadata;
 
-public class ManifestScanner implements PackageInfoScanner {
+public class ManifestScanner implements PackageMetadataScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManifestScanner.class);
     
     private final Name nameAttribute;

@@ -25,7 +25,7 @@ import java.util.List;
 import com.google.common.annotations.VisibleForTesting;
 import com.xebialabs.deployit.plugin.api.reflect.Type;
 import com.xebialabs.deployit.plugin.jee.artifact.Ear;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageMetadataScanner;
 
 public class EarImporter extends JeeArchiveImporter {
     private static final Type EAR_TYPE = Type.valueOf(Ear.class);
@@ -35,7 +35,7 @@ public class EarImporter extends JeeArchiveImporter {
     }
     
     @VisibleForTesting
-    protected EarImporter(List<PackageInfoScanner> scanners) {
+    protected EarImporter(List<PackageMetadataScanner> scanners) {
         super(Ear.ARCHIVE_EXTENSION, EAR_TYPE, scanners);
     }
 }

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xebialabs.deployit.server.api.importer.singlefile.SingleFileImporter.PackageMetadata;
 
-public class FilenameScanner implements PackageInfoScanner {
+public class FilenameScanner implements PackageMetadataScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(FilenameScanner.class);
     
     private final Pattern nameVersionPattern;

@@ -36,7 +36,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.xebialabs.deployit.plugin.api.reflect.Type;
 import com.xebialabs.deployit.server.api.importer.jeearchive.config.ConfigParser;
 import com.xebialabs.deployit.server.api.importer.jeearchive.config.PrefixStripper;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageMetadataScanner;
 import com.xebialabs.deployit.server.api.importer.singlefile.ExtensionBasedImporter;
 
 abstract class JeeArchiveImporter extends ExtensionBasedImporter {
@@ -58,7 +58,7 @@ abstract class JeeArchiveImporter extends ExtensionBasedImporter {
         CONFIG = new PrefixStripper(CONFIG_PROPERTY_PREFIX).apply(configProperties);
     }
     
-    protected final List<PackageInfoScanner> scanners;
+    protected final List<PackageMetadataScanner> scanners;
     
     protected JeeArchiveImporter(String extension, Type type) {
         this(extension, type, new ConfigParser(CONFIG).get());
@@ -66,7 +66,7 @@ abstract class JeeArchiveImporter extends ExtensionBasedImporter {
     
     @VisibleForTesting
     protected JeeArchiveImporter(String extension, Type type, 
-            List<PackageInfoScanner> scanners) {
+            List<PackageMetadataScanner> scanners) {
         super(extension, type);
         // defensive copy
         this.scanners = copyOf(scanners);
@@ -75,7 +75,7 @@ abstract class JeeArchiveImporter extends ExtensionBasedImporter {
     @Override
     protected PackageMetadata getPackageMetadata(File file) {
         // first non-null result wins
-        for (PackageInfoScanner scanner : scanners) {
+        for (PackageMetadataScanner scanner : scanners) {
             PackageMetadata result = scanner.scan(file);
             if (result != null) {
                 LOGGER.info("Returning package metadata for application '{}', version {}", 

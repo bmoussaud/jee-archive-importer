@@ -31,7 +31,7 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableMap;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FilenameScanner;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.ManifestScanner;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageMetadataScanner;
 
 /**
  * Unit tests for the {@link ConfigParser}
@@ -46,7 +46,7 @@ public class ConfigParserTest {
     
     @Test
     public void returnsFilenameScanner() {
-        List<PackageInfoScanner> scanners = new ConfigParser(
+        List<PackageMetadataScanner> scanners = new ConfigParser(
                 ImmutableMap.of("nameVersionRegex", ".*", "defaultVersion", "1.0")).get();
         assertEquals(1, scanners.size());
         assertTrue(format("Expected an instance of %s", FilenameScanner.class), 
@@ -55,7 +55,7 @@ public class ConfigParserTest {
     
     @Test
     public void returnsManifestAndFilenameScannerIfSpecified() {
-        List<PackageInfoScanner> scanners = new ConfigParser(
+        List<PackageMetadataScanner> scanners = new ConfigParser(
                 ImmutableMap.of("nameVersionRegex", ".*", "defaultVersion", "1.0",
                         "scanManifest", "true", "nameManifestAttribute", "App-Name",
                         "versionManifestAttribute", "App-Version")).get();

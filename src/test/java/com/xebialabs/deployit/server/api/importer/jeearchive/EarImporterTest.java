@@ -34,7 +34,7 @@ import org.junit.rules.TemporaryFolder;
 
 import com.google.common.collect.ImmutableList;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FileSource;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageMetadataScanner;
 
 
 /**
@@ -64,6 +64,6 @@ public class EarImporterTest extends TestBase {
     }
     
     private static EarImporter newEarImporter() {
-        return new EarImporter(ImmutableList.<PackageInfoScanner>of());
+        return new EarImporter(ImmutableList.<PackageMetadataScanner>of());
     }
 }

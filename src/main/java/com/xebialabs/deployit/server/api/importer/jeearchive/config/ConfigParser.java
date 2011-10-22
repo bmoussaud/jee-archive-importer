@@ -36,10 +36,10 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FilenameScanner;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.ManifestScanner;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageMetadataScanner;
 
 
-public class ConfigParser implements Supplier<List<PackageInfoScanner>>{
+public class ConfigParser implements Supplier<List<PackageMetadataScanner>>{
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigParser.class);
     
     // TODO: make scanners responsible for their own instantiation
@@ -49,19 +49,19 @@ public class ConfigParser implements Supplier<List<PackageInfoScanner>>{
     private static final String NAME_VERSION_REGEX_PROPERTY = "nameVersionRegex";
     private static final String DEFAULT_VERSION_PROPERTY = "defaultVersion";
     
-    private final List<PackageInfoScanner> scanners;
+    private final List<PackageMetadataScanner> scanners;
     
     public ConfigParser(@Nonnull Map<String, String> config) {
         scanners = parseConfig(config);
     }
     
-    private static List<PackageInfoScanner> parseConfig(Map<String, String> config) {
+    private static List<PackageMetadataScanner> parseConfig(Map<String, String> config) {
         
         if (config.isEmpty()) {
             return ImmutableList.of();
         }
         
-        List<PackageInfoScanner> scanners = newLinkedList();
+        List<PackageMetadataScanner> scanners = newLinkedList();
         
         String scanManifest = config.get(SCAN_MANIFEST_PROPERTY);
         if (parseBoolean(scanManifest)) {
@@ -89,7 +89,7 @@ public class ConfigParser implements Supplier<List<PackageInfoScanner>>{
     }
     
     @Override
-    public @Nonnull List<PackageInfoScanner> get() {
+    public @Nonnull List<PackageMetadataScanner> get() {
         return scanners;
     }
 }
