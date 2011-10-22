@@ -22,23 +22,18 @@ package com.xebialabs.deployit.server.api.importer.jeearchive.config;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Lists.newLinkedList;
-import static com.xebialabs.deployit.server.api.importer.jeearchive.collect.Maps2.transformKeys;
 import static java.lang.Boolean.parseBoolean;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FilenameScanner;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.ManifestScanner;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
@@ -46,9 +41,6 @@ import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfo
 
 public class ConfigParser implements Supplier<List<PackageInfoScanner>>{
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigParser.class);
-    
-    // must be a regex
-    private static final String CONFIG_PROPERTY_PREFIX = Pattern.quote("ear-importer.");
     
     // TODO: make scanners responsible for their own instantiation
     private static final String SCAN_MANIFEST_PROPERTY = "scanManifest";
@@ -59,19 +51,10 @@ public class ConfigParser implements Supplier<List<PackageInfoScanner>>{
     
     private final List<PackageInfoScanner> scanners;
     
-    public ConfigParser(@Nonnull Properties config) {
-        scanners = parseConfig(stripPrefix(config));
+    public ConfigParser(@Nonnull Map<String, String> config) {
+        scanners = parseConfig(config);
     }
     
-    private static Map<String, String> stripPrefix(Properties config) {
-        return transformKeys(Maps.fromProperties(config), new Function<String, String>() {
-                @Override
-                public String apply(String input) {
-                    return input.replaceFirst(CONFIG_PROPERTY_PREFIX, "");
-                }
-            });
-    }
-
     private static List<PackageInfoScanner> parseConfig(Map<String, String> config) {
         
         if (config.isEmpty()) {

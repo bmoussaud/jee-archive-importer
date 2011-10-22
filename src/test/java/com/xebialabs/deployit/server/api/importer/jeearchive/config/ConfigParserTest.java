@@ -25,11 +25,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Properties;
 
 import org.junit.Test;
 
-import com.xebialabs.deployit.server.api.importer.jeearchive.config.ConfigParser;
+import com.google.common.collect.ImmutableMap;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FilenameScanner;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.ManifestScanner;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
@@ -42,15 +41,13 @@ public class ConfigParserTest {
     @Test
     public void returnsNoScannersForEmptyConfig() {
         assertTrue("Expected no scanners", 
-                new ConfigParser(new Properties()).get().isEmpty());
+                new ConfigParser(ImmutableMap.<String, String>of()).get().isEmpty());
     }
     
     @Test
     public void returnsFilenameScanner() {
-        Properties config = new Properties();
-        config.put("ear-importer.nameVersionRegex", ".*");
-        config.put("ear-importer.defaultVersion", "1.0");
-        List<PackageInfoScanner> scanners = new ConfigParser(config).get();
+        List<PackageInfoScanner> scanners = new ConfigParser(
+                ImmutableMap.of("nameVersionRegex", ".*", "defaultVersion", "1.0")).get();
         assertEquals(1, scanners.size());
         assertTrue(format("Expected an instance of %s", FilenameScanner.class), 
                 scanners.get(0) instanceof FilenameScanner);
@@ -58,13 +55,10 @@ public class ConfigParserTest {
     
     @Test
     public void returnsManifestAndFilenameScannerIfSpecified() {
-        Properties config = new Properties();
-        config.put("ear-importer.nameVersionRegex", ".*");
-        config.put("ear-importer.defaultVersion", "1.0");
-        config.put("ear-importer.scanManifest", "true");
-        config.put("ear-importer.nameManifestAttribute", "App-Name");
-        config.put("ear-importer.versionManifestAttribute", "App-Version");
-        List<PackageInfoScanner> scanners = new ConfigParser(config).get();
+        List<PackageInfoScanner> scanners = new ConfigParser(
+                ImmutableMap.of("nameVersionRegex", ".*", "defaultVersion", "1.0",
+                        "scanManifest", "true", "nameManifestAttribute", "App-Name",
+                        "versionManifestAttribute", "App-Version")).get();
         assertEquals(2, scanners.size());
         // manifest scanning comes first
         assertTrue(format("Expected an instance of %s", ManifestScanner.class), 

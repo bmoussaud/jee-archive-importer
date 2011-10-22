@@ -26,6 +26,7 @@ import static java.lang.String.format;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.annotations.VisibleForTesting;
 import com.xebialabs.deployit.plugin.api.reflect.Type;
 import com.xebialabs.deployit.server.api.importer.jeearchive.config.ConfigParser;
+import com.xebialabs.deployit.server.api.importer.jeearchive.config.PrefixStripper;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageInfoScanner;
 import com.xebialabs.deployit.server.api.importer.singlefile.ExtensionBasedImporter;
 
@@ -41,16 +43,19 @@ abstract class JeeArchiveImporter extends ExtensionBasedImporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JeeArchiveImporter.class);
     
     private static final String CONFIG_FILE_NAME = "jee-archive-importer.properties";
-    private static final Properties CONFIG = new Properties();
+    private static final String CONFIG_PROPERTY_PREFIX = "jee-archive-importer.";
+    private static final Map<String, String> CONFIG;
     
     static {
+        Properties configProperties = new Properties();
         try {
-            CONFIG.load(checkNotNull(Thread.currentThread().getContextClassLoader()
+            configProperties.load(checkNotNull(Thread.currentThread().getContextClassLoader()
                     .getResourceAsStream(CONFIG_FILE_NAME), CONFIG_FILE_NAME));
         } catch (Exception exception) {
             LOGGER.error(format("Unable to load configuration file '%s' from classpath", 
                     CONFIG_FILE_NAME), exception);
         }
+        CONFIG = new PrefixStripper(CONFIG_PROPERTY_PREFIX).apply(configProperties);
     }
     
     protected final List<PackageInfoScanner> scanners;
