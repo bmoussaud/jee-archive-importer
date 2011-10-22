@@ -24,20 +24,18 @@ import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.xebialabs.deployit.plugin.api.udm.Deployable;
 import com.xebialabs.deployit.plugin.jee.artifact.Ear;
+import com.xebialabs.deployit.server.api.importer.ImportSource;
 import com.xebialabs.deployit.server.api.importer.ImportingContext;
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FileSource;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.FilenameScanner;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageMetadataScanner;
 import com.xebialabs.overthere.local.LocalFile;
 
 
@@ -72,8 +70,7 @@ public class EarImporterItest extends TestBase {
 
     @Test
     public void createsPackageWithEarFromFilename() throws IOException {
-        EarImporter importer = new EarImporter(ImmutableList.<PackageMetadataScanner>of(
-                new FilenameScanner("(.+)", "1.0")));
+        EarImporter importer = new EarImporter("(.+)", "1.0", false, null);
         FileSource source = new FileSource(ARCHIVE_WITH_MANIFEST);
         PackageInfo packageInfo = importer.preparePackage(source, DUMMY_IMPORT_CTX);
         // from the filename
@@ -101,5 +98,21 @@ public class EarImporterItest extends TestBase {
         public <T> void setAttribute(String name, T value) {
             throw new UnsupportedOperationException("TODO Auto-generated method stub");
         }
+    }
+    
+    private static class FileSource implements ImportSource {
+        private final File file;
+        
+        public FileSource(String path) {
+            file = new File(path);
+        }
+        
+        @Override
+        public File getFile() {
+            return file;
+        }
+
+        @Override
+        public void cleanUp() {}
     }
 }

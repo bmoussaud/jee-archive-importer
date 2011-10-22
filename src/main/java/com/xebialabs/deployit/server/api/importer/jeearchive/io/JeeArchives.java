@@ -21,7 +21,6 @@
 package com.xebialabs.deployit.server.api.importer.jeearchive.io;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,24 +28,11 @@ import java.util.jar.Manifest;
 
 import javax.annotation.Nonnull;
 
-import com.xebialabs.deployit.plugin.jee.artifact.Ear;
-
 import de.schlichtherle.truezip.file.TFile;
 import de.schlichtherle.truezip.file.TFileInputStream;
 
 public class JeeArchives {
     public static final String MANIFEST_PATH = "META-INF/MANIFEST.MF";
-    
-    // must be lowercase
-    private static final String EAR_FILENAME_SUFFIX = format(".%s", Ear.ARCHIVE_EXTENSION);
-    
-    public static boolean isEar(@Nonnull File file) {
-        return isEar(file.getName());
-    }
-    
-    public static boolean isEar(@Nonnull String filename) {
-        return filename.toLowerCase().endsWith(EAR_FILENAME_SUFFIX);
-    }
     
     public static @Nonnull Manifest getManifest(@Nonnull File ear) throws IOException {
         TFileInputStream manifestEntryStream = 

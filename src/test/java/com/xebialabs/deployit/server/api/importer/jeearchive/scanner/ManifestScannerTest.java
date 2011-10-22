@@ -20,7 +20,6 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
-import static com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporterTest.ARCHIVE_WITHOUT_ATTRIBUTES;
 import static com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporterTest.ARCHIVE_WITH_MANIFEST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -36,6 +35,7 @@ import com.xebialabs.deployit.server.api.importer.singlefile.SingleFileImporter.
  * Unit test(s) for the {@link ManifestScanner}
  */
 public class ManifestScannerTest {
+    private static final String ARCHIVE_WITHOUT_ATTRIBUTES = "src/test/resources/ear-without-manifest-attributes.ear";
     
     private final ManifestScanner scanner = 
         new ManifestScanner("App-Name", "App-Version");

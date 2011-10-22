@@ -21,13 +21,13 @@
 package com.xebialabs.deployit.server.api.importer.jeearchive;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.ImmutableList.copyOf;
 import static java.lang.String.format;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.annotation.Nonnull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +36,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.xebialabs.deployit.plugin.api.reflect.Type;
 import com.xebialabs.deployit.server.api.importer.jeearchive.config.ConfigParser;
 import com.xebialabs.deployit.server.api.importer.jeearchive.config.PrefixStripper;
-import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.PackageMetadataScanner;
+import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.ManifestScanner;
 import com.xebialabs.deployit.server.api.importer.singlefile.ExtensionBasedImporter;
+import com.xebialabs.deployit.server.api.importer.singlefile.base.NameAndVersion;
+import com.xebialabs.deployit.server.api.importer.singlefile.base.NameAndVersion.NameVersionParser;
 
 abstract class JeeArchiveImporter extends ExtensionBasedImporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JeeArchiveImporter.class);
@@ -58,31 +60,38 @@ abstract class JeeArchiveImporter extends ExtensionBasedImporter {
         CONFIG = new PrefixStripper(CONFIG_PROPERTY_PREFIX).apply(configProperties);
     }
     
-    protected final List<PackageMetadataScanner> scanners;
+    protected final NameVersionParser nameVersionParser;
+    protected final String defaultAppVersion;
+    protected final boolean readMetadataFromManifest;
+    protected final ManifestScanner manifestScanner;
     
-    protected JeeArchiveImporter(String extension, Type type) {
-        this(extension, type, new ConfigParser(CONFIG).get());
+    protected JeeArchiveImporter(@Nonnull String extension, @Nonnull Type type) {
+        this(extension, type, ConfigParser.getNameVersionRegex(CONFIG), 
+                ConfigParser.getDefaultAppVersion(CONFIG), 
+                ConfigParser.isManifestScanningEnabled(CONFIG),
+                ConfigParser.getManifestScanner(CONFIG));
     }
     
-    @VisibleForTesting
+    @VisibleForTesting 
     protected JeeArchiveImporter(String extension, Type type, 
-            List<PackageMetadataScanner> scanners) {
+            String nameVersionRegex, String defaultAppVersion,
+            boolean readMetadataFromManifest, ManifestScanner manifestScanner) {
         super(extension, type);
-        // defensive copy
-        this.scanners = copyOf(scanners);
+        nameVersionParser = new NameVersionParser(nameVersionRegex);
+        this.defaultAppVersion = defaultAppVersion;
+        this.readMetadataFromManifest = readMetadataFromManifest;
+        this.manifestScanner = manifestScanner;
     }
     
     @Override
     protected PackageMetadata getPackageMetadata(File file) {
-        // first non-null result wins
-        for (PackageMetadataScanner scanner : scanners) {
-            PackageMetadata result = scanner.scan(file);
-            if (result != null) {
-                LOGGER.info("Returning package metadata for application '{}', version {}", 
-                        result.appName, result.appVersion);
-                return result;
-            }
-        }
-        throw new IllegalArgumentException(format("Unable to import JEE archive (?) '%s'", file));
+        return (readMetadataFromManifest ? manifestScanner.scan(file)
+                                         : getMetadataFromFilename(file.getName()));
+    }
+    
+    private PackageMetadata getMetadataFromFilename(String filename) {
+        NameAndVersion nameAndVersion = 
+            nameVersionParser.parse(filename, defaultAppVersion);
+        return new PackageMetadata(nameAndVersion.name, nameAndVersion.version);
     }
 }

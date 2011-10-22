@@ -20,18 +20,22 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive.scanner;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Function;
 import com.xebialabs.deployit.server.api.importer.jeearchive.io.JeeArchives;
 import com.xebialabs.deployit.server.api.importer.singlefile.SingleFileImporter.PackageMetadata;
 
-public class ManifestScanner implements PackageMetadataScanner {
+public class ManifestScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManifestScanner.class);
     
     private final Name nameAttribute;
@@ -42,7 +46,6 @@ public class ManifestScanner implements PackageMetadataScanner {
         this.versionAttribute = new Name(versionAttribute);
     }
 
-    @Override
     public PackageMetadata scan(File jeeArchive) {
         Attributes mainAttributes;
         try {
@@ -62,5 +65,23 @@ public class ManifestScanner implements PackageMetadataScanner {
         
         return new PackageMetadata(mainAttributes.getValue(nameAttribute),
                 mainAttributes.getValue(versionAttribute));
+    }
+    
+    public static class ConfigParser implements Function<Map<String, String>, ManifestScanner> {
+        private static final String NAME_MANIFEST_ATTRIBUTE_PROPERTY = "nameManifestAttribute";
+        private static final String VERSION_MANIFEST_ATTRIBUTE_PROPERTY = "versionManifestAttribute";
+        
+        @Override
+        public ManifestScanner apply(Map<String, String> input) {
+            checkArgument(input.containsKey(NAME_MANIFEST_ATTRIBUTE_PROPERTY)
+                    && input.containsKey(VERSION_MANIFEST_ATTRIBUTE_PROPERTY), 
+              "Configuration file does not contain the required properties '%s' and '%s'", 
+              NAME_MANIFEST_ATTRIBUTE_PROPERTY, VERSION_MANIFEST_ATTRIBUTE_PROPERTY);
+            LOGGER.debug("Added manifest scanning for attributes '{}' and '{}'",
+                    input.get(NAME_MANIFEST_ATTRIBUTE_PROPERTY), 
+                    input.get(VERSION_MANIFEST_ATTRIBUTE_PROPERTY));
+            return new ManifestScanner(input.get(NAME_MANIFEST_ATTRIBUTE_PROPERTY), 
+                    input.get(VERSION_MANIFEST_ATTRIBUTE_PROPERTY));
+        }
     }
 }
