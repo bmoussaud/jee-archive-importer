@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Maps;
 import com.xebialabs.deployit.plugin.api.reflect.Type;
 import com.xebialabs.deployit.server.api.importer.jeearchive.config.ConfigParser;
 import com.xebialabs.deployit.server.api.importer.jeearchive.config.PrefixStripper;
@@ -57,7 +58,8 @@ abstract class JeeArchiveImporter extends ExtensionBasedImporter {
             LOGGER.error(format("Unable to load configuration file '%s' from classpath", 
                     CONFIG_FILE_NAME), exception);
         }
-        CONFIG = new PrefixStripper(CONFIG_PROPERTY_PREFIX).apply(configProperties);
+        CONFIG = new PrefixStripper(CONFIG_PROPERTY_PREFIX)
+                 .apply(Maps.fromProperties(configProperties));
     }
     
     protected final NameVersionParser nameVersionParser;
@@ -66,10 +68,15 @@ abstract class JeeArchiveImporter extends ExtensionBasedImporter {
     protected final ManifestScanner manifestScanner;
     
     protected JeeArchiveImporter(@Nonnull String extension, @Nonnull Type type) {
-        this(extension, type, ConfigParser.getNameVersionRegex(CONFIG), 
-                ConfigParser.getDefaultAppVersion(CONFIG), 
-                ConfigParser.isManifestScanningEnabled(CONFIG),
-                ConfigParser.getManifestScanner(CONFIG));
+        // grr...constructor call must be first so can't just instantiate and use the parser
+        this(extension, type, new ConfigParser(CONFIG, extension));
+    }
+    
+    private JeeArchiveImporter(String extension, Type type, ConfigParser configParser) {
+        this(extension, type, configParser.getNameVersionRegex(), 
+                configParser.getDefaultAppVersion(), 
+                configParser.isManifestScanningEnabled(),
+                configParser.getManifestScanner());
     }
     
     @VisibleForTesting 

@@ -20,37 +20,54 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive.config;
 
+import static com.google.common.collect.Maps.filterKeys;
 import static java.lang.Boolean.parseBoolean;
+import static java.lang.String.format;
 
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.base.Predicate;
 import com.xebialabs.deployit.server.api.importer.jeearchive.scanner.ManifestScanner;
 
 public class ConfigParser {
     private static final String SCAN_MANIFEST_PROPERTY = "scanManifest";
     private static final String NAME_VERSION_REGEX_PROPERTY = "nameVersionRegex";
     private static final String DEFAULT_APP_VERSION_PROPERTY = "defaultAppVersion";
-    
     private static final ManifestScanner.ConfigParser MANIFEST_SCANNER_FACTORY =
         new ManifestScanner.ConfigParser();
     
-    public static boolean isManifestScanningEnabled(@Nonnull Map<String, String> config) {
-        return parseBoolean(config.get(SCAN_MANIFEST_PROPERTY));
+    private final String propertyPrefix;
+    private final Map<String, String> configForExtension;
+    
+    public ConfigParser(@Nonnull Map<String, String> config, 
+            @Nonnull String supportedExtension) {
+        propertyPrefix = format("%s.", supportedExtension);
+        configForExtension = new PrefixStripper(propertyPrefix).apply(
+                filterKeys(config, new Predicate<String>() {
+                    @Override
+                    public boolean apply(String input) {
+                        return input.startsWith(propertyPrefix);
+                    }
+                }));
     }
     
-    public static @Nullable ManifestScanner getManifestScanner(@Nonnull Map<String, String> config) {
-        return (isManifestScanningEnabled(config) ? MANIFEST_SCANNER_FACTORY.apply(config)
-                                                  : null);
+    public boolean isManifestScanningEnabled() {
+        return parseBoolean(configForExtension.get(SCAN_MANIFEST_PROPERTY));
+    }
+    
+    public @Nullable ManifestScanner getManifestScanner() {
+        return (isManifestScanningEnabled() ? MANIFEST_SCANNER_FACTORY.apply(configForExtension)
+                                            : null);
     }
 
-    public static @Nonnull String getNameVersionRegex(@Nonnull Map<String, String> config) {
-        return config.get(NAME_VERSION_REGEX_PROPERTY);
+    public @Nonnull String getNameVersionRegex() {
+        return configForExtension.get(NAME_VERSION_REGEX_PROPERTY);
     }
 
-    public static @Nonnull String getDefaultAppVersion(@Nonnull Map<String, String> config) {
-        return config.get(DEFAULT_APP_VERSION_PROPERTY);
+    public @Nonnull String getDefaultAppVersion() {
+        return configForExtension.get(DEFAULT_APP_VERSION_PROPERTY);
     }
 }

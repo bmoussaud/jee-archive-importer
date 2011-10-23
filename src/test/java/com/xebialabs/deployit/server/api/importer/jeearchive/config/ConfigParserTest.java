@@ -1,5 +1,5 @@
 /*
- * @(#)ConfigPrefixStripper.java     22 Oct 2011
+ * @(#)ConfigParserTest.java     22 Oct 2011
  *
  * Copyright © 2010 Andrew Phillips.
  *
@@ -20,28 +20,20 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive.config;
 
-import static com.xebialabs.deployit.server.api.importer.jeearchive.collect.Maps2.transformKeys;
+import static org.junit.Assert.assertEquals;
 
-import java.util.Map;
-import java.util.regex.Pattern;
+import org.junit.Test;
 
-import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 
-public class PrefixStripper implements Function<Map<String, String>, Map<String, String>> {
-    // must be a regex
-    private final String prefixToStripRegex;
-    
-    public PrefixStripper(String prefixToStrip) {
-        prefixToStripRegex = Pattern.quote(prefixToStrip);
-    }
+/**
+ * Unit tests for the {@link ConfigParser}
+ */
+public class ConfigParserTest {
 
-    @Override
-    public Map<String, String> apply(Map<String, String> input) {
-        return transformKeys(input, new Function<String, String>() {
-            @Override
-            public String apply(String input) {
-                return input.replaceFirst(prefixToStripRegex, "");
-            }
-        });
+    @Test
+    public void usesPropertiesPrefixedByExtension() {
+        assertEquals("version", new ConfigParser(ImmutableMap.of(
+                "ext.defaultAppVersion", "version"), "ext").getDefaultAppVersion());
     }
 }
