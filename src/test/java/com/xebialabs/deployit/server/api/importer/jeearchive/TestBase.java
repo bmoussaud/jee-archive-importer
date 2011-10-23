@@ -26,7 +26,7 @@ import com.xebialabs.deployit.plugin.api.boot.PluginBooter;
 
 // must be public for @BeforeClass to be called!
 public abstract class TestBase {
-  
+    
     @BeforeClass
     public static void boot() {
         PluginBooter.bootWithoutGlobalContext();

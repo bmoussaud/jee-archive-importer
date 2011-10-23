@@ -20,7 +20,6 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive;
 
-import static com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporterTest.ARCHIVE_WITH_MANIFEST;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,20 +31,21 @@ import org.junit.Test;
 
 import com.google.common.io.Files;
 import com.xebialabs.deployit.plugin.api.udm.Deployable;
-import com.xebialabs.deployit.plugin.jee.artifact.Ear;
+import com.xebialabs.deployit.plugin.jee.artifact.War;
 import com.xebialabs.deployit.server.api.importer.PackageInfo;
 import com.xebialabs.overthere.local.LocalFile;
 
 
 /**
- * Integration tests for the {@link EarImporter}
+ * Integration tests for the {@link WarImporter}
  */
-public class EarImporterItest extends ItestBase {
+public class WarImporterItest extends ItestBase {
+    private static final String WAR_WITH_MANIFEST = "src/test/resources/war-with-manifest.war";
     
     @Test
-    public void createsPackageWithEarFromManifest() throws IOException {
-        EarImporter importer = new EarImporter();
-        FileSource source = new FileSource(ARCHIVE_WITH_MANIFEST);
+    public void createsPackageWithWarFromManifest() throws IOException {
+        WarImporter importer = new WarImporter();
+        FileSource source = new FileSource(WAR_WITH_MANIFEST);
         PackageInfo packageInfo = importer.preparePackage(source, DUMMY_IMPORT_CTX);
         // from the manifest
         assertEquals("myApp", packageInfo.getApplicationName());
@@ -53,32 +53,32 @@ public class EarImporterItest extends ItestBase {
         List<Deployable> deployables = 
             importer.importEntities(packageInfo, DUMMY_IMPORT_CTX).getDeployables();
         assertEquals(1, deployables.size());
-        assertTrue(format("Expected instance of %s", Ear.class),
-                deployables.get(0) instanceof Ear);
-        Ear ear = (Ear) deployables.get(0);
+        assertTrue(format("Expected instance of %s", War.class),
+                deployables.get(0) instanceof War);
+        War War = (War) deployables.get(0);
         assertTrue("Expected the files to contain the same bytes",
-                Files.equal(source.getFile(), ((LocalFile) ear.getFile()).getFile()));
-        assertEquals("Applications/myApp/3/myApp", ear.getId());
-        assertEquals("myApp", ear.getName());
+                Files.equal(source.getFile(), ((LocalFile) War.getFile()).getFile()));
+        assertEquals("Applications/myApp/3/myApp", War.getId());
+        assertEquals("myApp", War.getName());
     }
 
     @Test
-    public void createsPackageWithEarFromFilename() throws IOException {
-        EarImporter importer = new EarImporter("(.+)", "1.0", false, null);
-        FileSource source = new FileSource(ARCHIVE_WITH_MANIFEST);
+    public void createsPackageWithWarFromFilename() throws IOException {
+        WarImporter importer = new WarImporter("(.+)", "1.0", false, null);
+        FileSource source = new FileSource(WAR_WITH_MANIFEST);
         PackageInfo packageInfo = importer.preparePackage(source, DUMMY_IMPORT_CTX);
         // from the filename
-        assertEquals("ear-with-manifest.ear", packageInfo.getApplicationName());
+        assertEquals("war-with-manifest.war", packageInfo.getApplicationName());
         assertEquals("1.0", packageInfo.getApplicationVersion());
         List<Deployable> deployables = 
             importer.importEntities(packageInfo, DUMMY_IMPORT_CTX).getDeployables();
         assertEquals(1, deployables.size());
-        assertTrue(format("Expected instance of %s", Ear.class),
-                deployables.get(0) instanceof Ear);
-        Ear ear = (Ear) deployables.get(0);
+        assertTrue(format("Expected instance of %s", War.class),
+                deployables.get(0) instanceof War);
+        War War = (War) deployables.get(0);
         assertTrue("Expected the files to contain the same bytes",
-                Files.equal(source.getFile(), ((LocalFile) ear.getFile()).getFile()));
-        assertEquals("Applications/ear-with-manifest.ear/1.0/ear-with-manifest.ear", ear.getId());
-        assertEquals("ear-with-manifest.ear", ear.getName());
+                Files.equal(source.getFile(), ((LocalFile) War.getFile()).getFile()));
+        assertEquals("Applications/war-with-manifest.war/1.0/war-with-manifest.war", War.getId());
+        assertEquals("war-with-manifest.war", War.getName());
     }
 }
