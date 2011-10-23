@@ -20,6 +20,7 @@
  */
 package com.xebialabs.deployit.server.api.importer.jeearchive;
 
+import static com.xebialabs.deployit.server.api.importer.jeearchive.JeeArchiveImporterTest.ARCHIVE_WITH_MANIFEST;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -43,9 +44,6 @@ import com.xebialabs.overthere.local.LocalFile;
  * Integration tests for the {@link EarImporter}
  */
 public class EarImporterItest extends TestBase {
-    public static final String ARCHIVE_WITH_MANIFEST = "src/test/resources/ear-with-manifest.ear";
-    public static final String ARCHIVE_WITHOUT_ATTRIBUTES = "src/test/resources/ear-without-manifest-attributes.ear";
-    
     private static final ImportingContext DUMMY_IMPORT_CTX = new DummyImportingContext();
     
     @Test
