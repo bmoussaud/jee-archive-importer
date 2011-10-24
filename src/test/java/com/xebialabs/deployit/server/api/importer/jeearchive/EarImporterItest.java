@@ -64,6 +64,26 @@ public class EarImporterItest extends ItestBase {
 
     @Test
     public void createsPackageWithEarFromFilename() throws IOException {
+        EarImporter importer = new EarImporter("(\\w+)-(.+)", "1.0", false, null);
+        FileSource source = new FileSource(ARCHIVE_WITH_MANIFEST);
+        PackageInfo packageInfo = importer.preparePackage(source, DUMMY_IMPORT_CTX);
+        // from the filename
+        assertEquals("ear", packageInfo.getApplicationName());
+        assertEquals("with-manifest.ear", packageInfo.getApplicationVersion());
+        List<Deployable> deployables = 
+            importer.importEntities(packageInfo, DUMMY_IMPORT_CTX).getDeployables();
+        assertEquals(1, deployables.size());
+        assertTrue(format("Expected instance of %s", Ear.class),
+                deployables.get(0) instanceof Ear);
+        Ear ear = (Ear) deployables.get(0);
+        assertTrue("Expected the files to contain the same bytes",
+                Files.equal(source.getFile(), ((LocalFile) ear.getFile()).getFile()));
+        assertEquals("Applications/ear/with-manifest.ear/ear", ear.getId());
+        assertEquals("ear", ear.getName());
+    }
+    
+    @Test
+    public void createsPackageWithEarFromFilenameAndDefaultVersion() throws IOException {
         EarImporter importer = new EarImporter("(.+)", "1.0", false, null);
         FileSource source = new FileSource(ARCHIVE_WITH_MANIFEST);
         PackageInfo packageInfo = importer.preparePackage(source, DUMMY_IMPORT_CTX);

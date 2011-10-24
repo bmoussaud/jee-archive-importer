@@ -64,6 +64,26 @@ public class WarImporterItest extends ItestBase {
 
     @Test
     public void createsPackageWithWarFromFilename() throws IOException {
+        WarImporter importer = new WarImporter("(\\w+)-(.+)", "1.0", false, null);
+        FileSource source = new FileSource(WAR_WITH_MANIFEST);
+        PackageInfo packageInfo = importer.preparePackage(source, DUMMY_IMPORT_CTX);
+        // from the filename
+        assertEquals("war", packageInfo.getApplicationName());
+        assertEquals("with-manifest.war", packageInfo.getApplicationVersion());
+        List<Deployable> deployables = 
+            importer.importEntities(packageInfo, DUMMY_IMPORT_CTX).getDeployables();
+        assertEquals(1, deployables.size());
+        assertTrue(format("Expected instance of %s", War.class),
+                deployables.get(0) instanceof War);
+        War War = (War) deployables.get(0);
+        assertTrue("Expected the files to contain the same bytes",
+                Files.equal(source.getFile(), ((LocalFile) War.getFile()).getFile()));
+        assertEquals("Applications/war/with-manifest.war/war", War.getId());
+        assertEquals("war", War.getName());
+    }
+    
+    @Test
+    public void createsPackageWithWarFromFilenameAndDefaultVersion() throws IOException {
         WarImporter importer = new WarImporter("(.+)", "1.0", false, null);
         FileSource source = new FileSource(WAR_WITH_MANIFEST);
         PackageInfo packageInfo = importer.preparePackage(source, DUMMY_IMPORT_CTX);
