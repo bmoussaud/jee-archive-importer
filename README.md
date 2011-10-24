@@ -19,21 +19,21 @@ The main task of the importer is to derive, on the basis of the EAR or WAR file,
 
 The default option (and fallback) is to attempt to extract the application name and version from the archive file name itself. This is controlled by the
 
-# '<ext>' is 'ear' or 'war'
-jee-archive-importer.<ext>.nameVersionRegex
+# '&lt;ext&gt;' is 'ear' or 'war'
+jee-archive-importer.&lt;ext&gt;.nameVersionRegex
 
 property - if the name matches, the first matching group becomes the name and the second, if found, the version. If only the name can be matched the
 
-jee-archive-importer.<ext>.defaultVersion
+jee-archive-importer.&lt;ext&gt;.defaultVersion
 
 property determines the version given to the deployment package. If the property
 
-jee-archive-importer.<ext>.scanManifest=true
+jee-archive-importer.&lt;ext&gt;.scanManifest=true
 
 is set, the importer will - before falling back to the file name - attempt to extract the application name and version from the archive's manifest. The properties
 
-jee-archive-importer.<ext>.nameManifestAttribute
-jee-archive-importer.<ext>.versionManifestAttribute
+jee-archive-importer.&lt;ext&gt;.nameManifestAttribute
+jee-archive-importer.&lt;ext&gt;.versionManifestAttribute
 
 determine the manifest attributes that should be read to determine the name (resp. version) of the deployment package.
 
