@@ -1,48 +1,45 @@
 apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'maven'
 
-group = 'com.xebialabs.deployit'
-version = '1.0-SNAPSHOT'
+group = 'com.xebialabs.deployit.community'
+apiVersion = '3.7.0'
+version = "${apiVersion}-1-SNAPSHOT"
 
 sourceCompatibility = 1.6
 sourceEncoding = 'UTF-8'
 
-configurations {
-  // http://issues.gradle.org/browse/GRADLE-784
-  provided
-}
-
-serverApiVersion = '3.5.1.2'
-pluginApiVersion = '3.5.1.2'
-trueZipVersion = '7.3.1'
-
 dependencies {
-  provided "com.xebialabs.deployit:server-plugin-api:${serverApiVersion}"
-  provided "com.xebialabs.deployit.plugins:jee-plugin:${pluginApiVersion}"
-  compile "com.xebialabs.deployit:single-file-importer:1.0-SNAPSHOT"
-  compile "de.schlichtherle.truezip:truezip-file:${trueZipVersion}"
-  runtime "de.schlichtherle.truezip:truezip-driver-zip:${trueZipVersion}"
-  testCompile 'junit:junit:4.8.2'
-  testCompile 'ch.qos.logback:logback-classic:0.9.24'
-  testCompile 'com.qrmedia.commons:commons-lang:1.0.2'
+    compile "com.xebialabs.deployit:udm-plugin-api:$apiVersion"
+	compile "com.google.guava:guava:10.0.1"
+	compile "com.xebialabs.deployit:server-plugin-api:$apiVersion"
+	compile "com.xebialabs.deployit.plugins:jee-plugin:$apiVersion"
+	compile "com.xebialabs.deployit.community:single-file-importer:$version"
+
+	testCompile 'com.qrmedia.commons:commons-lang:1.0.2'
+	testCompile 'junit:junit:4.8.2'
+	testCompile "com.xebialabs.deployit:udm-test-support:$apiVersion"
 }
 
 repositories {
-	mavenLocal()
-}
-
-sourceSets {
-  main { compileClasspath += configurations.provided }
-  
-  // need the server-api and plugin-api to build *and* run the tests
-  test { 
-    compileClasspath += configurations.provided
-    runtimeClasspath += configurations.provided
+  mavenLocal()
+  if (!rootProject.hasProperty('offline')) {
+    mavenCentral()
+    maven {
+      credentials {
+        username nexusUserName
+        password nexusPassword
+      }
+      url "${nexusBaseUrl}/repositories/releases"
+    }
   }
 }
 
 afterEvaluate { eachProject ->
-  eachProject.tasks.withType(Test).each { testTask ->
+  Set testTasks = eachProject.tasks.withType(Test)
+  
+  testTasks.each { testTask ->
     testTask.onlyIf { !project.hasProperty('skipTests') }
     testTask.afterSuite { descriptor, result ->
       if (descriptor.className != null) {
@@ -55,9 +52,7 @@ afterEvaluate { eachProject ->
 }
 
 task generatePom << {
-  conf2ScopeMappings.addMapping(Integer.MAX_VALUE, configurations.provided, 
-    Conf2ScopeMappingContainer.PROVIDED)
-  pom { 
+  pom {
     project { 
       build { 
         plugins {
@@ -77,8 +72,8 @@ task generatePom << {
               encoding = sourceEncoding
             }
           }
-        } 
-      } 
-    } 
+        }
+      }
+    }
   }.writeTo('pom.xml')
 }
